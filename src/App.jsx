@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { supabase } from "./supabase";
 
 const OFFICER_USERNAME = "officer";
 const OFFICER_PASSWORD = "class2025";
@@ -48,11 +49,32 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [toast, setToast] = useState(null);
 
+  useEffect(() => {
+    if (supabase) {
+      supabase.from('assignments').select('*').order('postedAt', { ascending: false }).then(({ data }) => {
+        if (data) setAssignments(data);
+      });
+      supabase.from('submissions').select('*').order('submittedAt', { ascending: false }).then(({ data }) => {
+        if (data) {
+          const subs = {};
+          data.forEach(s => {
+            if (!subs[s.assignment_id]) subs[s.assignment_id] = [];
+            subs[s.assignment_id].push(s);
+          });
+          setSubmissions(subs);
+        }
+      });
+    }
+  }, []);
+
   const showToast = (msg) => { setToast(msg); };
 
   const openDetail = (asgn) => { setSelected(asgn); setView("detail"); };
 
-  const deleteAssignment = (id) => {
+  const deleteAssignment = async (id) => {
+    if (supabase) {
+      await supabase.from('assignments').delete().eq('id', id);
+    }
     setAssignments(prev => prev.filter(a => a.id !== id));
     setSubmissions(prev => { const n = {...prev}; delete n[id]; return n; });
     setView("board");
@@ -109,7 +131,12 @@ export default function App() {
         )}
         {view==="create" && (
           <CreateView
-            onSave={(asgn)=>{setAssignments(prev=>[asgn,...prev]);setView("board");showToast("Assignment posted! ✅");}}
+            onSave={async (asgn)=>{
+              if (supabase) await supabase.from('assignments').insert([asgn]);
+              setAssignments(prev=>[asgn,...prev]);
+              setView("board");
+              showToast("Assignment posted! ✅");
+            }}
             onBack={()=>setView("board")}
           />
         )}
@@ -118,7 +145,8 @@ export default function App() {
             asgn={selected}
             subs={submissions[selected.id]||[]}
             isOfficer={officer}
-            onSubmit={(sub)=>{
+            onSubmit={async (sub)=>{
+              if (supabase) await supabase.from('submissions').insert([{...sub, assignment_id: selected.id}]);
               setSubmissions(prev=>({...prev,[selected.id]:[sub,...(prev[selected.id]||[])]}));
               showToast("Submitted! 🎉");
             }}
