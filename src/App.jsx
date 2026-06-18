@@ -399,4 +399,5 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
 const inp={width:"100%",padding:"9px 12px",border:"1.5px solid #ccc",borderRadius:6,fontSize:14,fontFamily:"'Patrick Hand',cursive",outline:"none",background:"#fffef5",color:"#1a1a2e"};
 const lbl={fontSize:13,color:"#666",display:"block",marginBottom:4};
 const btnP={background:"#1a1a2e",color:"#fff",border:"none",borderRadius:6,padding:"10px 22px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:15,fontWeight:"bold"};
-const btnG={backgr
+const btnG={background:"#fff",color:"#1a1a2e",border:"1.5px solid #1a1a2e",borderRadius:6,padding:"10px 22px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:15};
+const navBtn={background:"none",border:"1.5px solid rgba(255,255,255,0.6)",color:"#fff",borderRadius:6,padding:"7px 14px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:14};
