@@ -84,10 +84,10 @@ export default function App() {
   return (
     <div style={{ minHeight:"100vh", background:"#f0ece0", fontFamily:"'Patrick Hand',cursive" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Architects+Daughter&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Patrick+Hand&family=Architects+Daughter&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-        input,textarea{font-family:'Patrick Hand',cursive;}
+        input,textarea{font-family:'Inter', sans-serif;}
       `}</style>
 
       {/* NAV */}
@@ -199,7 +199,7 @@ function BoardView({assignments,submissions,onOpen}) {
                   <span style={{fontSize:12,background:"#e74c3c",padding:"2px 10px",borderRadius:20,fontFamily:"'Patrick Hand',cursive"}}>{a.subject||"Assignment"}</span>
                 </div>
                 <div style={{padding:"12px 18px 14px"}}>
-                  <p style={{fontSize:14,color:"#555",lineHeight:1.6,marginBottom:10}}>
+                  <p style={{fontFamily:"'Inter', sans-serif",fontSize:15,color:"#444",lineHeight:1.6,marginBottom:10}}>
                     {a.description.length>120?a.description.slice(0,120)+"…":a.description}
                   </p>
                   <div style={{display:"flex",gap:16,flexWrap:"wrap",fontSize:13}}>
@@ -350,7 +350,7 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
         </div>
         {asgn.image&&<img src={asgn.image} alt="assignment" style={{width:"100%",maxHeight:280,objectFit:"cover"}} />}
         <div style={{padding:"16px 20px"}}>
-          <p style={{fontSize:15,color:"#333",lineHeight:1.8,marginBottom:14}}>{asgn.description}</p>
+          <p style={{fontFamily:"'Inter', sans-serif",fontSize:15,color:"#333",lineHeight:1.8,marginBottom:14,whiteSpace:"pre-wrap"}}>{asgn.description}</p>
           <div style={{display:"flex",gap:20,flexWrap:"wrap",fontSize:13,color:"#666",borderTop:"1px dashed #ddd",paddingTop:12}}>
             {asgn.deadline&&<span style={{color:dl.color,fontWeight:"bold"}}>🗓 Due: {fmt(asgn.deadline)} · {dl.label}</span>}
             <span>📤 {subs.length} submission{subs.length!==1?"s":""}</span>
@@ -424,7 +424,7 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
                   <span style={{fontSize:12,color:"#aaa"}}>{fmt(s.submittedAt)}</span>
                 </div>
                 <div style={{padding:"12px 16px"}}>
-                  {s.text&&<p style={{fontSize:14,color:"#333",lineHeight:1.7,marginBottom:s.image?10:0}}>{s.text}</p>}
+                  {s.text&&<p style={{fontFamily:"'Inter', sans-serif",fontSize:15,color:"#333",lineHeight:1.7,marginBottom:s.image?10:0,whiteSpace:"pre-wrap"}}>{s.text}</p>}
                   {s.image&&<img src={s.image} alt="submission" style={{width:"100%",borderRadius:6,maxHeight:260,objectFit:"cover"}} />}
                 </div>
               </div>
@@ -436,7 +436,7 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
   );
 }
 
-const inp={width:"100%",padding:"9px 12px",border:"1.5px solid #ccc",borderRadius:6,fontSize:14,fontFamily:"'Patrick Hand',cursive",outline:"none",background:"#fffef5",color:"#1a1a2e"};
+const inp={width:"100%",padding:"9px 12px",border:"1.5px solid #ccc",borderRadius:6,fontSize:14,fontFamily:"'Inter', sans-serif",outline:"none",background:"#fffef5",color:"#1a1a2e"};
 const lbl={fontSize:13,color:"#666",display:"block",marginBottom:4};
 const btnP={background:"#1a1a2e",color:"#fff",border:"none",borderRadius:6,padding:"10px 22px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:15,fontWeight:"bold"};
 const btnG={background:"transparent",color:"#666",border:"1.5px solid #ccc",borderRadius:6,padding:"10px 22px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:15,fontWeight:"bold",display:"flex",alignItems:"center"};
