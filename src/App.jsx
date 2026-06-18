@@ -87,6 +87,8 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Patrick+Hand&family=Architects+Daughter&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         input,textarea{font-family:'Inter', sans-serif;}
       `}</style>
 
@@ -324,8 +326,15 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
   const [imgName,setImgName]=useState("");
   const [submitted,setSubmitted]=useState(false);
   const [confirmDel,setConfirmDel]=useState(false);
+  const [loading,setLoading]=useState(true);
   const fileRef=useRef();
   const dl=asgn.deadline?daysLeft(asgn.deadline):null;
+
+  useEffect(() => {
+    setLoading(true);
+    const t = setTimeout(() => setLoading(false), 400);
+    return () => clearTimeout(t);
+  }, [asgn.id]);
 
   const handleImg=(e)=>{
     const file=e.target.files[0];if(!file)return;
@@ -339,53 +348,69 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
     setSubmitted(true);setName("");setText("");setImage(null);setImgName("");
   };
 
-  return (
-    <div>
-      <button onClick={onBack} style={{...btnG,marginBottom:20,fontSize:13}}>← Back to board</button>
+  if (loading) {
+    return (
+      <div style={{textAlign:"center", padding:"100px 0"}}>
+        <div style={{width:40,height:40,border:"4px solid #ccc",borderTopColor:"#1a1a2e",borderRadius:"50%",animation:"spin 0.8s linear infinite",margin:"0 auto"}}></div>
+        <p style={{fontFamily:"'Architects Daughter',cursive",fontSize:18,color:"#666",marginTop:16}}>Loading assignment details...</p>
+      </div>
+    );
+  }
 
-      <div style={{background:"#fff",border:"2px solid #1a1a2e",borderRadius:4,boxShadow:"5px 5px 0 #1a1a2e",overflow:"hidden",marginBottom:28}}>
-        <div style={{background:"#1a1a2e",color:"#fff",padding:"12px 18px",fontFamily:"'Architects Daughter',cursive",fontSize:20,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+  return (
+    <div style={{animation:"slideUp 0.4s ease-out both"}}>
+      <button onClick={onBack} style={{...btnG,marginBottom:20,fontSize:14,padding:"8px 16px",borderRadius:20,border:"2px solid #1a1a2e",background:"#fff",boxShadow:"2px 2px 0 #1a1a2e"}}>← Back to board</button>
+
+      <div style={{background:"#fff",border:"3px solid #1a1a2e",borderRadius:12,boxShadow:"6px 6px 0 #1a1a2e",overflow:"hidden",marginBottom:32}}>
+        <div style={{background:"linear-gradient(135deg, #1a1a2e 0%, #2c3e50 100%)",color:"#fff",padding:"16px 24px",fontFamily:"'Architects Daughter',cursive",fontSize:24,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <span>{asgn.title}</span>
-          <span style={{fontSize:12,background:"#e74c3c",padding:"2px 10px",borderRadius:20,fontFamily:"'Patrick Hand',cursive"}}>{asgn.subject}</span>
+          <span style={{fontSize:13,background:"#e74c3c",padding:"4px 12px",borderRadius:20,fontFamily:"'Patrick Hand',cursive"}}>{asgn.subject}</span>
         </div>
-        {asgn.image&&<img src={asgn.image} alt="assignment" style={{width:"100%",maxHeight:280,objectFit:"cover"}} />}
-        <div style={{padding:"16px 20px"}}>
-          <p style={{fontFamily:"'Inter', sans-serif",fontSize:15,color:"#333",lineHeight:1.8,marginBottom:14,whiteSpace:"pre-wrap"}}>{asgn.description}</p>
-          <div style={{display:"flex",gap:20,flexWrap:"wrap",fontSize:13,color:"#666",borderTop:"1px dashed #ddd",paddingTop:12}}>
+        
+        {asgn.image&& (
+          <div style={{padding:"20px 24px 0"}}>
+            <img src={asgn.image} alt="assignment" style={{width:"100%",maxHeight:400,objectFit:"cover",borderRadius:8,border:"2px solid #ddd",boxShadow:"0 4px 12px rgba(0,0,0,0.1)"}} />
+          </div>
+        )}
+        
+        <div style={{padding:"20px 24px"}}>
+          <p style={{fontFamily:"'Inter', sans-serif",fontSize:16,color:"#333",lineHeight:1.8,marginBottom:20,whiteSpace:"pre-wrap"}}>{asgn.description}</p>
+          <div style={{display:"flex",gap:20,flexWrap:"wrap",fontSize:14,color:"#555",background:"#f9f9f9",padding:"12px 16px",borderRadius:8,border:"1px solid #eee"}}>
             {asgn.deadline&&<span style={{color:dl.color,fontWeight:"bold"}}>🗓 Due: {fmt(asgn.deadline)} · {dl.label}</span>}
             <span>📤 {subs.length} submission{subs.length!==1?"s":""}</span>
             <span>📌 Posted {fmt(asgn.postedAt)}</span>
           </div>
         </div>
+        
         {isOfficer&&(
-          <div style={{padding:"0 20px 16px",borderTop:"1px dashed #eee"}}>
+          <div style={{padding:"0 24px 20px",borderTop:"1px dashed #eee",marginTop:10,paddingTop:20}}>
             {!confirmDel?(
-              <button onClick={()=>setConfirmDel(true)} style={{background:"none",border:"1.5px solid #e74c3c",color:"#e74c3c",borderRadius:6,padding:"6px 14px",cursor:"pointer",fontSize:13,fontFamily:"'Patrick Hand',cursive",marginTop:10}}>
+              <button onClick={()=>setConfirmDel(true)} style={{background:"none",border:"2px solid #e74c3c",color:"#e74c3c",borderRadius:8,padding:"8px 16px",cursor:"pointer",fontSize:14,fontFamily:"'Patrick Hand',cursive",fontWeight:"bold"}}>
                 🗑 Delete Assignment
               </button>
             ):(
-              <div style={{display:"flex",gap:10,alignItems:"center",marginTop:10}}>
-                <span style={{fontSize:13,color:"#e74c3c"}}>Delete permanently?</span>
-                <button onClick={onDelete} style={{...btnP,background:"#e74c3c",fontSize:13,padding:"5px 14px"}}>Yes, delete</button>
-                <button onClick={()=>setConfirmDel(false)} style={{...btnG,fontSize:13,padding:"5px 14px"}}>Cancel</button>
+              <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                <span style={{fontSize:14,color:"#e74c3c",fontWeight:"bold"}}>Delete permanently?</span>
+                <button onClick={onDelete} style={{...btnP,background:"#e74c3c",fontSize:14,padding:"8px 16px"}}>Yes, delete</button>
+                <button onClick={()=>setConfirmDel(false)} style={{...btnG,fontSize:14,padding:"8px 16px"}}>Cancel</button>
               </div>
             )}
           </div>
         )}
       </div>
 
-      <div style={{background:"#fff",border:"2px solid #1a1a2e",borderRadius:4,boxShadow:"5px 5px 0 #1a1a2e",overflow:"hidden",marginBottom:28}}>
-        <div style={{background:"#2c3e50",color:"#fff",padding:"10px 18px",fontFamily:"'Architects Daughter',cursive",fontSize:16}}>
+      <div style={{background:"#fff",border:"3px solid #1a1a2e",borderRadius:12,boxShadow:"6px 6px 0 #1a1a2e",overflow:"hidden",marginBottom:32}}>
+        <div style={{background:"linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",color:"#fff",padding:"12px 20px",fontFamily:"'Architects Daughter',cursive",fontSize:18}}>
           📤 Submit Your Work
         </div>
         {submitted?(
-          <div style={{padding:28,textAlign:"center"}}>
-            <div style={{fontSize:40,marginBottom:10}}>🎉</div>
-            <p style={{fontFamily:"'Architects Daughter',cursive",fontSize:18,color:"#27ae60"}}>Submitted successfully!</p>
-            <button onClick={()=>setSubmitted(false)} style={{...btnG,margin:"14px auto 0",fontSize:13}}>Submit another</button>
+          <div style={{padding:32,textAlign:"center"}}>
+            <div style={{fontSize:48,marginBottom:12}}>🎉</div>
+            <p style={{fontFamily:"'Architects Daughter',cursive",fontSize:22,color:"#27ae60"}}>Submitted successfully!</p>
+            <button onClick={()=>setSubmitted(false)} style={{...btnG,margin:"20px auto 0",fontSize:14,border:"2px solid #27ae60",color:"#27ae60"}}>Submit another</button>
           </div>
         ):(
-          <div style={{padding:20,display:"flex",flexDirection:"column",gap:14}}>
+          <div style={{padding:24,display:"flex",flexDirection:"column",gap:16}}>
             <div>
               <label style={lbl}>Your Name *</label>
               <input value={name} onChange={e=>setName(e.target.value)} placeholder="Full name" style={inp} />
@@ -396,14 +421,14 @@ function DetailView({asgn,subs,isOfficer,onSubmit,onDelete,onBack}) {
             </div>
             <div>
               <label style={lbl}>Upload Image (optional)</label>
-              <button onClick={()=>fileRef.current.click()} style={{...btnG,width:"100%",justifyContent:"center",padding:"9px 0"}}>
+              <button onClick={()=>fileRef.current.click()} style={{...btnG,width:"100%",justifyContent:"center",padding:"12px 0",border:"2px dashed #ccc",background:"#fdfdfd"}}>
                 {imgName?`📎 ${imgName}`:"📎 Attach image"}
               </button>
               <input ref={fileRef} type="file" accept="image/*" style={{display:"none"}} onChange={handleImg} />
-              {image&&<img src={image} alt="preview" style={{marginTop:8,width:"100%",borderRadius:6,border:"1.5px solid #ddd",maxHeight:180,objectFit:"cover"}} />}
+              {image&&<img src={image} alt="preview" style={{marginTop:12,width:"100%",borderRadius:8,border:"2px solid #ddd",maxHeight:220,objectFit:"cover"}} />}
             </div>
-            <button onClick={submit} disabled={!name.trim()||(!text.trim()&&!image)} style={{...btnP,opacity:(!name.trim()||(!text.trim()&&!image))?0.5:1}}>
-              Submit
+            <button onClick={submit} disabled={!name.trim()||(!text.trim()&&!image)} style={{...btnP,padding:"12px 20px",fontSize:16,marginTop:8,opacity:(!name.trim()||(!text.trim()&&!image))?0.5:1}}>
+              Submit Assignment
             </button>
           </div>
         )}
