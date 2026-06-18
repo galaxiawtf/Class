@@ -1,7 +1,19 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const OFFICER_USERNAME = "officer";
 const OFFICER_PASSWORD = "class2025";
+
+const navBtn = {
+  background: "transparent",
+  border: "1px solid #fff",
+  color: "#fff",
+  borderRadius: 6,
+  padding: "7px 16px",
+  cursor: "pointer",
+  fontFamily: "'Patrick Hand',cursive",
+  fontSize: 14,
+  fontWeight: "bold"
+};
 
 function daysLeft(deadline) {
   const diff = new Date(deadline) - new Date();
@@ -17,7 +29,7 @@ function fmt(dateStr) {
 }
 
 function Toast({ msg, onDone }) {
-  useState(() => { const t = setTimeout(onDone, 2200); return () => clearTimeout(t); });
+  useEffect(() => { const t = setTimeout(onDone, 2200); return () => clearTimeout(t); }, [msg, onDone]);
   return (
     <div style={{
       position:"fixed",bottom:28,left:"50%",transform:"translateX(-50%)",
