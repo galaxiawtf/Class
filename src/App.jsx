@@ -400,3 +400,4 @@ const inp={width:"100%",padding:"9px 12px",border:"1.5px solid #ccc",borderRadiu
 const lbl={fontSize:13,color:"#666",display:"block",marginBottom:4};
 const btnP={background:"#1a1a2e",color:"#fff",border:"none",borderRadius:6,padding:"10px 22px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:15,fontWeight:"bold"};
 const btnG={background:"#f5f5f5",color:"#1a1a2e",border:"1.5px solid #ccc",borderRadius:6,padding:"10px 22px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:15,display:"flex",alignItems:"center",gap:6};
+const navBtn={background:"none",color:"#fff",border:"1.5px solid rgba(255,255,255,0.4)",borderRadius:6,padding:"6px 16px",cursor:"pointer",fontFamily:"'Patrick Hand',cursive",fontSize:14};
